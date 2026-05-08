@@ -334,7 +334,7 @@
                     <button onclick="switchAdminTab('tab-descargas')" id="btn-tab-descargas" class="admin-tab-btn px-4 py-2.5 rounded-t-xl font-bold text-sm transition-all whitespace-nowrap bg-slate-900/80 text-slate-300 hover:text-white border-b-2 border-transparent backdrop-blur-md hover:bg-slate-800/90">
                         <i data-lucide="download" class="inline w-4 h-4 mr-2 relative -top-0.5"></i> Exportar e Informes
                     </button>
-                    <!-- NUEVA PESTAÑA PERSONAL -->
+                    <!-- PESTAÑA PERSONAL -->
                     <button onclick="switchAdminTab('tab-ajustes')" id="btn-tab-ajustes" class="admin-tab-btn px-4 py-2.5 rounded-t-xl font-bold text-sm transition-all whitespace-nowrap bg-slate-900/80 text-slate-300 hover:text-white border-b-2 border-transparent backdrop-blur-md hover:bg-slate-800/90">
                         <i data-lucide="users-cog" class="inline w-4 h-4 mr-2 relative -top-0.5"></i> Personal
                     </button>
@@ -440,25 +440,28 @@
 
                 <!-- SECCIÓN 3: EXPORTACIONES Y DESCARGAS -->
                 <div id="tab-descargas" class="admin-tab-content hidden animate-fade-in">
-                    <div class="max-w-2xl mx-auto">
+                    <div class="max-w-4xl mx-auto">
                         <div class="text-center mb-8">
                             <h3 class="text-2xl font-black text-white">Generar Informes</h3>
                             <p class="text-sm text-slate-400 mt-1">Descarga el registro de horas en Excel o PDF</p>
                         </div>
 
                         <div class="bg-slate-950/60 p-6 rounded-2xl border border-slate-800/60 shadow-inner mb-8">
-                            <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wide mb-4">Filtros de Exportación</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wide mb-4">Filtros de Exportación (Elige Mes o Semana)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
                                     <label class="block text-xs font-bold text-slate-400 mb-2">Trabajadora</label>
-                                    <!-- Select dinámico -->
                                     <select id="exportWorker" class="w-full py-2.5 px-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm font-bold">
                                         <option value="ALL">Todas</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-400 mb-2">Mes</label>
+                                    <label class="block text-xs font-bold text-slate-400 mb-2">Por Mes</label>
                                     <input type="month" id="exportMonth" class="w-full py-2.5 px-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm font-bold" style="color-scheme: dark;">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-400 mb-2">Por Semana</label>
+                                    <input type="week" id="exportWeek" class="w-full py-2.5 px-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm font-bold" style="color-scheme: dark;">
                                 </div>
                                 <div class="flex items-end">
                                     <button onclick="limpiarFiltrosExport()" class="w-full py-2.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-bold border border-slate-600 transition-colors">
@@ -468,21 +471,21 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
                             <button onclick="generarExcelPersonalizado()" class="group bg-slate-800/80 hover:bg-emerald-900/50 border border-slate-700 hover:border-emerald-500/50 p-6 rounded-2xl text-left transition-all relative overflow-hidden">
                                 <i data-lucide="file-spreadsheet" class="w-10 h-10 text-emerald-500 mb-4 group-hover:scale-110 transition-transform"></i>
                                 <h4 class="text-xl font-bold text-white mb-1">Descargar Excel (CSV)</h4>
-                                <p class="text-xs text-slate-400">Ideal para abrir en Excel o Google Sheets y hacer cálculos de nóminas.</p>
+                                <p class="text-xs text-slate-400">Ideal para cálculos en hojas de cálculo.</p>
                             </button>
                             
                             <button onclick="generarPDFPersonalizado()" class="group bg-slate-800/80 hover:bg-red-900/40 border border-slate-700 hover:border-red-500/50 p-6 rounded-2xl text-left transition-all relative overflow-hidden">
                                 <i data-lucide="file-text" class="w-10 h-10 text-red-400 mb-4 group-hover:scale-110 transition-transform"></i>
                                 <h4 class="text-xl font-bold text-white mb-1">Descargar PDF</h4>
-                                <p class="text-xs text-slate-400">Documento profesional en A4 con formato de tabla, listo para imprimir.</p>
+                                <p class="text-xs text-slate-400">Documento profesional en A4 listo para imprimir.</p>
                             </button>
                         </div>
                         
-                        <div class="mt-8">
+                        <div class="mt-8 max-w-2xl mx-auto">
                             <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wide mb-4">Vista previa (Últimos 5 registros)</h4>
                             <div class="overflow-x-auto rounded-xl border border-slate-700/50 bg-slate-950">
                                 <table class="w-full text-left text-sm text-slate-300">
@@ -589,7 +592,7 @@
                 <button type="button" onclick="cerrarModalConfirmacion()" class="flex-1 py-3.5 px-4 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/50 text-white rounded-xl font-bold transition-all text-sm shadow-md">
                     Cancelar
                 </button>
-                <button type="button" id="btnConfirmarFinal" onclick="ejecutarGuardadoFirebase()" class="flex-[1.5] py-3.5 px-4 bg-emerald-600/90 hover:bg-emerald-500 border border-emerald-500/50 text-white rounded-xl font-black transition-all text-sm shadow-md flex justify-center items-center gap-2">
+                <button type="button" id="btnConfirmarFinal" onclick="ejecutarGuardadoFirebase()" class="flex-[1.5] py-3.5 px-4 bg-emerald-600/90 hover:bg-emerald-50 border border-emerald-500/50 text-white rounded-xl font-black transition-all text-sm shadow-md flex justify-center items-center gap-2">
                     <i data-lucide="check" class="w-5 h-5"></i> SÍ, GUARDAR
                 </button>
             </div>
@@ -625,7 +628,6 @@
         <div class="bg-slate-900/95 border border-slate-700/60 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-sm w-full animate-fade-in relative overflow-hidden backdrop-blur-xl">
             <div class="absolute top-0 left-0 right-0 h-1 bg-blue-500"></div>
             
-            <!-- Hidden inputs para saber a quién se edita o dónde se añade -->
             <input type="hidden" id="edit-id">
             <input type="hidden" id="edit-operaria">
             <input type="hidden" id="edit-fecha">
@@ -707,7 +709,6 @@
         let specialStatuses = [];
 
         function actualizarSelectsHTML() {
-            // Actualizar desplegables de Trabajadoras
             const selectsTrabajadoras = ['operaria', 'adminWorkerFilter', 'selectPinWorker', 'exportWorker'];
             selectsTrabajadoras.forEach(id => {
                 const sel = document.getElementById(id);
@@ -718,7 +719,6 @@
                 sel.innerHTML = html;
             });
 
-            // Actualizar desplegable de Tipos de Edición
             const selTipo = document.getElementById('edit-tipo');
             if(selTipo) {
                 let html = `<option value="HORAS">Horas Trabajadas</option>
@@ -899,11 +899,9 @@
                     NOMBRES = data.trabajadores && data.trabajadores.length > 0 ? data.trabajadores : [...NOMBRES_DEFECTO];
                     customTipos = data.customTipos || [];
                     PIN_OPERARIAS = data.pinOperarias || {};
-                    // Asegurar que todas las de NOMBRES tienen un PIN
                     NOMBRES.forEach(n => { if(!PIN_OPERARIAS[n]) PIN_OPERARIAS[n] = "1234"; });
                     PIN_ADMIN = data.pinAdmin || "admin123";
                 } else {
-                    // Inicialización por defecto en Firebase
                     NOMBRES = [...NOMBRES_DEFECTO];
                     customTipos = [];
                     NOMBRES.forEach(n => PIN_OPERARIAS[n] = "1234");
@@ -1186,7 +1184,6 @@
             const tbody = document.getElementById('tablaCuadrante');
             tbody.innerHTML = '';
 
-            // Detectar operarias con registros antiguos que ya no están en NOMBRES (para mostrarlas en el histórico si tienen algo esa semana)
             let trabsSemana = new Set(NOMBRES);
             for(let i=0; i<7; i++) {
                const trs = registrosGlobales.filter(r => r.fecha === fechas[i].full).map(r => r.operaria);
@@ -1208,7 +1205,7 @@
                         let celda = `<td class="p-2 border-r border-slate-800/50 min-w-[120px] text-center"><div class="flex flex-col gap-1">`;
                         turnos.forEach(t => {
                             if(specialStatuses.includes(t.horaEntrada)) {
-                                let colorClass = "bg-purple-900/40 border-purple-800/50 text-purple-400"; // Color por defecto custom
+                                let colorClass = "bg-purple-900/40 border-purple-800/50 text-purple-400";
                                 if(t.horaEntrada === 'BAJA') colorClass = "bg-red-900/40 border-red-800/50 text-red-400";
                                 else if(t.horaEntrada === 'PERSONAL') colorClass = "bg-blue-900/40 border-blue-800/50 text-blue-400";
                                 else if(t.horaEntrada === 'FIESTA') colorClass = "bg-orange-900/40 border-orange-800/50 text-orange-400";
@@ -1361,7 +1358,7 @@
             if(NOMBRES.includes(nombre)) return alert("Esta trabajadora ya existe.");
             
             NOMBRES.push(nombre);
-            PIN_OPERARIAS[nombre] = "1234"; // PIN por defecto
+            PIN_OPERARIAS[nombre] = "1234";
             await guardarConfiguracionGlobal();
             
             document.getElementById('new-worker-input').value = '';
@@ -1384,7 +1381,6 @@
             
             await guardarConfiguracionGlobal();
             
-            // Actualizar el nombre en los fichajes históricos para no romper el cuadrante
             const toUpdate = registrosGlobales.filter(r => r.operaria === oldName);
             for(let r of toUpdate) {
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'fichajes', r.id), { operaria: finalName });
@@ -1432,10 +1428,11 @@
         };
 
 
-        // --- LÓGICA DE EXPORTACIÓN (EXCEL Y PDF) ---
-        function filtrarRegistrosParaExportar() {
+        // --- LÓGICA DE EXPORTACIÓN (EXCEL Y PDF) MODIFICADA ---
+        function filtrarRegistrosParaExportar(checkWeek = false) {
             const worker = document.getElementById('exportWorker').value;
             const monthVal = document.getElementById('exportMonth').value; 
+            const weekVal = document.getElementById('exportWeek').value; 
             
             let filtrados = registrosGlobales;
             
@@ -1444,6 +1441,9 @@
             }
             if (monthVal) {
                 filtrados = filtrados.filter(r => r.fecha.startsWith(monthVal));
+            } else if (weekVal && checkWeek) {
+                const fechasSemana = getLunesDomingo(weekVal).map(f => f.full);
+                filtrados = filtrados.filter(r => fechasSemana.includes(r.fecha));
             }
             return filtrados;
         }
@@ -1451,14 +1451,22 @@
         window.limpiarFiltrosExport = function() {
             document.getElementById('exportWorker').value = 'ALL';
             document.getElementById('exportMonth').value = '';
+            document.getElementById('exportWeek').value = '';
             actualizarPreviewExport();
         };
 
         document.getElementById('exportWorker').addEventListener('change', actualizarPreviewExport);
-        document.getElementById('exportMonth').addEventListener('change', actualizarPreviewExport);
+        document.getElementById('exportMonth').addEventListener('change', (e) => {
+            if(e.target.value) document.getElementById('exportWeek').value = '';
+            actualizarPreviewExport();
+        });
+        document.getElementById('exportWeek').addEventListener('change', (e) => {
+            if(e.target.value) document.getElementById('exportMonth').value = '';
+            actualizarPreviewExport();
+        });
 
         function actualizarPreviewExport() {
-            const data = filtrarRegistrosParaExportar().slice(0, 5);
+            const data = filtrarRegistrosParaExportar(true).slice(0, 5);
             const tbody = document.getElementById('previewTablaExport');
             tbody.innerHTML = '';
             if(data.length === 0) {
@@ -1480,7 +1488,7 @@
         }
 
         window.generarExcelPersonalizado = function() {
-            const data = filtrarRegistrosParaExportar();
+            const data = filtrarRegistrosParaExportar(true);
             if (data.length === 0) return alert("No hay datos para exportar con estos filtros.");
             
             let csvContent = "Operaria,Dia,Fecha,Entrada,Salida,Total Horas\n";
@@ -1502,47 +1510,149 @@
         };
 
         window.generarPDFPersonalizado = function() {
-            const data = filtrarRegistrosParaExportar();
-            if (data.length === 0) return alert("No hay datos para exportar con estos filtros.");
+            const workerSelected = document.getElementById('exportWorker').value;
+            const monthVal = document.getElementById('exportMonth').value;
+            const weekVal = document.getElementById('exportWeek').value;
+
+            if(!monthVal && !weekVal) return alert("Por favor, selecciona un Mes o una Semana para generar el PDF.");
+
+            const dataCompleta = filtrarRegistrosParaExportar(true);
+            if (dataCompleta.length === 0) return alert("No hay datos para exportar con estos filtros.");
             
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Título
-            doc.setFontSize(18);
-            doc.text("Reporte de Control Horario - La Mediterrania", 14, 20);
-            
-            // Subtítulo con filtros
-            doc.setFontSize(11);
-            let subtitulo = `Trabajadora: ${document.getElementById('exportWorker').value === 'ALL' ? 'Todas' : document.getElementById('exportWorker').value}`;
-            const monthVal = document.getElementById('exportMonth').value;
-            if(monthVal) subtitulo += ` | Mes: ${monthVal}`;
-            doc.text(subtitulo, 14, 28);
+            // --- MODO MENSUAL: UNA TABLA POR TRABAJADORA HACIA ABAJO ---
+            if (monthVal) {
+                const [yearStr, monthStr] = monthVal.split('-');
+                const year = parseInt(yearStr);
+                const month = parseInt(monthStr) - 1; 
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+                const mesesNombres = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-            // Preparar datos para autoTable
-            const bodyData = data.map(r => {
-                const especial = specialStatuses.includes(r.horaEntrada);
-                const [y, m, d] = r.fecha.split('-');
-                return [
-                    r.operaria, 
-                    `${d}/${m}/${y} (${r.diaSemana})`, 
-                    especial ? r.horaEntrada : r.horaEntrada, 
-                    especial ? '-' : r.horaSalida, 
-                    especial ? '-' : `${r.totalHoras} h`
-                ];
-            });
+                const trabajadoresAProcesar = workerSelected === 'ALL' ? NOMBRES : [workerSelected];
 
-            // Generar Tabla
-            doc.autoTable({
-                startY: 35,
-                head: [['Operaria', 'Fecha', 'Entrada', 'Salida', 'Total Horas']],
-                body: bodyData,
-                theme: 'striped',
-                headStyles: { fillColor: [15, 23, 42] },
-                styles: { fontSize: 10, cellPadding: 4 }
-            });
+                trabajadoresAProcesar.forEach((worker, index) => {
+                    if (index > 0) doc.addPage();
+                    
+                    doc.setFontSize(16);
+                    doc.text("Control Horario Mensual - La Mediterrania", 14, 20);
+                    doc.setFontSize(11);
+                    doc.text(`Trabajadora: ${worker} | Mes: ${mesesNombres[month]} ${year}`, 14, 28);
+
+                    let bodyData = [];
+                    let totalSemana = 0;
+
+                    for(let d = 1; d <= daysInMonth; d++) {
+                        const currentDate = new Date(year, month, d);
+                        const dateISO = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                        const diaSemanaStr = diasSemana[currentDate.getDay()];
+
+                        const shift = dataCompleta.find(r => r.operaria === worker && r.fecha === dateISO);
+
+                        let ent = '-'; let sal = '-'; let hrs = '-';
+                        if (shift) {
+                            const isSpecial = specialStatuses.includes(shift.horaEntrada);
+                            ent = shift.horaEntrada;
+                            sal = isSpecial ? '-' : shift.horaSalida;
+                            hrs = isSpecial ? '-' : shift.totalHoras;
+                            if(!isSpecial) totalSemana += Number(shift.totalHoras);
+                        }
+
+                        const isSunday = currentDate.getDay() === 0;
+                        const isLastDay = d === daysInMonth;
+
+                        let totalSemanaStr = '';
+                        if (isSunday || isLastDay) {
+                            totalSemanaStr = totalSemana > 0 ? `${totalSemana} h` : '-';
+                            totalSemana = 0;
+                        }
+
+                        bodyData.push([
+                            `${diaSemanaStr} ${String(d).padStart(2,'0')}`, 
+                            ent, sal, 
+                            hrs !== '-' ? `${hrs} h` : hrs, 
+                            totalSemanaStr
+                        ]);
+                    }
+
+                    doc.autoTable({
+                        startY: 35,
+                        head: [['Día y Fecha', 'Entrada', 'Salida', 'Horas Día', 'Total Semanal']],
+                        body: bodyData,
+                        theme: 'grid',
+                        headStyles: { fillColor: [15, 23, 42] },
+                        styles: { fontSize: 10, cellPadding: 4, halign: 'center' },
+                        columnStyles: { 0: { halign: 'left' }, 4: { fontStyle: 'bold', textColor: [16, 185, 129] } },
+                        didParseCell: function (data) {
+                            if (data.section === 'body' && data.column.index === 4 && data.cell.raw !== '-') {
+                                data.cell.styles.fillColor = [240, 253, 244]; // Soft emerald bg for weekly total
+                            }
+                        }
+                    });
+                });
+                
+                doc.save(`Fichajes_Mensual_${monthVal}.pdf`);
+            } 
             
-            doc.save(`Fichajes_LaMediterrania_${new Date().toISOString().split('T')[0]}.pdf`);
+            // --- MODO SEMANAL: FORMATO CUADRANTE ---
+            else if (weekVal) {
+                doc.setFontSize(16);
+                doc.text("Cuadrante Semanal - La Mediterrania", 14, 20);
+                doc.setFontSize(11);
+                
+                const fechas = getLunesDomingo(weekVal);
+                const mesesStr = ["Ene", "Feb", "Mar", "Abr", "Mayo", "Jun", "Jul", "Ago", "Sept", "Oct", "Nov", "Dic"];
+                const monday = fechas[0].dateObj;
+                const sunday = fechas[6].dateObj;
+                let rango = (monday.getMonth() === sunday.getMonth()) 
+                    ? `${monday.getDate()}-${sunday.getDate()} ${mesesStr[monday.getMonth()]}` 
+                    : `${monday.getDate()} ${mesesStr[monday.getMonth()]} - ${sunday.getDate()} ${mesesStr[sunday.getMonth()]}`;
+
+                doc.text(`Semana: ${weekVal.split('W')[1]} (${rango}) ${workerSelected !== 'ALL' ? '| Trabajadora: '+workerSelected : ''}`, 14, 28);
+
+                let headRow = ['Trabajadora'];
+                fechas.forEach(f => headRow.push(`${f.short}`));
+                headRow.push('Total');
+
+                let bodyData = [];
+                const trabajadoresAProcesar = workerSelected === 'ALL' ? NOMBRES : [workerSelected];
+
+                trabajadoresAProcesar.forEach(worker => {
+                    let fila = [worker];
+                    let totalSemanal = 0;
+                    
+                    for(let i=0; i<7; i++) {
+                        const shift = dataCompleta.find(r => r.operaria === worker && r.fecha === fechas[i].full);
+                        if(shift) {
+                            const isSpecial = specialStatuses.includes(shift.horaEntrada);
+                            if(isSpecial) {
+                                fila.push(shift.horaEntrada);
+                            } else {
+                                fila.push(`${shift.horaEntrada}\n${shift.horaSalida}\n(${shift.totalHoras}h)`);
+                                totalSemanal += Number(shift.totalHoras);
+                            }
+                        } else {
+                            fila.push('-');
+                        }
+                    }
+                    fila.push(`${totalSemanal} h`);
+                    bodyData.push(fila);
+                });
+
+                doc.autoTable({
+                    startY: 35,
+                    head: [headRow],
+                    body: bodyData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [15, 23, 42] },
+                    styles: { fontSize: 9, cellPadding: 3, halign: 'center', valign: 'middle' },
+                    columnStyles: { 0: { halign: 'left', fontStyle: 'bold' }, 8: { fontStyle: 'bold', textColor: [16, 185, 129] } }
+                });
+
+                doc.save(`Fichajes_Semana_${weekVal}.pdf`);
+            }
         };
 
         // --- LÓGICA DEL POPUP DE INSTALACIÓN PARA iOS ---
