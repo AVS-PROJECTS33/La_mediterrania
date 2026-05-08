@@ -357,7 +357,7 @@
                     
                     <div class="flex flex-col lg:flex-row gap-4 mb-6 bg-slate-950/60 p-4 rounded-2xl border border-slate-800/60">
                         <div class="flex-1">
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Semana del año</label>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Semana del año <span id="label-rango-semana" class="text-emerald-400 normal-case ml-1 tracking-normal font-bold"></span></label>
                             <input type="week" id="adminWeekFilter" class="w-full py-2.5 px-4 bg-slate-900/80 border border-slate-700/60 rounded-xl focus:ring-2 focus:ring-emerald-500/50 text-white font-bold shadow-inner" style="color-scheme: dark;">
                         </div>
                         <div class="flex-1">
@@ -664,10 +664,24 @@
             const pastDaysOfYear = (hoy - firstDayOfYear) / 86400000;
             const weekNum = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
             
+            // Calculo rango actual
+            const dayOfWeek = hoy.getDay();
+            const diffToMonday = hoy.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+            const monday = new Date(new Date().setDate(diffToMonday));
+            const sunday = new Date(new Date().setDate(diffToMonday + 6));
+            
+            const mesesStr = ["Ene", "Feb", "Mar", "Abr", "Mayo", "Jun", "Jul", "Ago", "Sept", "Oct", "Nov", "Dic"];
+            let rangoHoy = "";
+            if (monday.getMonth() === sunday.getMonth()) {
+                rangoHoy = `(${monday.getDate()}-${sunday.getDate()} ${mesesStr[monday.getMonth()]})`;
+            } else {
+                rangoHoy = `(${monday.getDate()} ${mesesStr[monday.getMonth()]}-${sunday.getDate()} ${mesesStr[sunday.getMonth()]})`;
+            }
+            
             const elDia = document.getElementById('info-hoy-dia');
             const elSem = document.getElementById('info-hoy-semana');
             if(elDia) elDia.textContent = `Hoy: ${dia}/${mes}/${año}`;
-            if(elSem) elSem.textContent = `Semana ${weekNum}`;
+            if(elSem) elSem.textContent = `Semana ${weekNum} ${rangoHoy}`;
         }
         actualizarInfoHoy();
 
@@ -920,7 +934,7 @@
                 cur.setDate(start.getDate() + i);
                 const iso = cur.toISOString().split('T')[0];
                 const ddmm = `${String(cur.getDate()).padStart(2,'0')}/${String(cur.getMonth()+1).padStart(2,'0')}`;
-                dates.push({ full: iso, short: ddmm });
+                dates.push({ full: iso, short: ddmm, dateObj: cur });
             }
             return dates;
         }
@@ -990,6 +1004,19 @@
             if(!weekStr) return;
             const fechas = getLunesDomingo(weekStr);
             
+            // Determinar rango de la semana a mostrar
+            const mesesStr = ["Ene", "Feb", "Mar", "Abr", "Mayo", "Jun", "Jul", "Ago", "Sept", "Oct", "Nov", "Dic"];
+            const monday = fechas[0].dateObj;
+            const sunday = fechas[6].dateObj;
+            let rangoFiltro = "";
+            if (monday.getMonth() === sunday.getMonth()) {
+                rangoFiltro = `(${monday.getDate()}-${sunday.getDate()} ${mesesStr[monday.getMonth()]})`;
+            } else {
+                rangoFiltro = `(${monday.getDate()} ${mesesStr[monday.getMonth()]} - ${sunday.getDate()} ${mesesStr[sunday.getMonth()]})`;
+            }
+            const labelRango = document.getElementById('label-rango-semana');
+            if (labelRango) labelRango.textContent = rangoFiltro;
+
             const diasId = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
             for(let i=0; i<7; i++) {
                 document.getElementById(`h-${diasId[i]}`).textContent = fechas[i].short;
