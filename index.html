@@ -208,22 +208,22 @@
                         </div>
 
                         <!-- Fecha -->
-                        <div class="space-y-2 text-center max-w-sm mx-auto">
+                        <div class="space-y-2 text-center max-w-[250px] mx-auto">
                             <label class="block text-sm font-bold text-slate-300">Día trabajado</label>
-                            <input type="date" id="fecha" required class="w-full px-4 py-4 bg-slate-950 border-2 border-slate-800 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors font-bold text-lg text-center shadow-inner block" style="color-scheme: dark;">
+                            <input type="date" id="fecha" required class="w-full px-2 py-3 bg-slate-950 border-2 border-slate-800 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors font-bold text-base text-center shadow-inner block mx-auto" style="color-scheme: dark;">
                         </div>
 
                         <!-- Hora Entrada y Salida -->
-                        <div class="grid grid-cols-2 gap-4 max-w-sm mx-auto">
+                        <div class="grid grid-cols-2 gap-4 max-w-[280px] mx-auto">
                             <div class="space-y-2 text-center">
                                 <label class="block text-sm font-bold text-slate-300">Entrada</label>
-                                <select id="horaEntrada" required class="w-full px-2 py-4 bg-slate-950 border-2 border-slate-800 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none text-center font-black text-2xl shadow-inner">
+                                <select id="horaEntrada" required class="w-full px-2 py-3 bg-slate-950 border-2 border-slate-800 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none text-center font-black text-xl shadow-inner mx-auto">
                                     <option value="" disabled selected>--:--</option>
                                 </select>
                             </div>
                             <div class="space-y-2 text-center">
                                 <label class="block text-sm font-bold text-slate-300">Salida</label>
-                                <select id="horaSalida" required class="w-full px-2 py-4 bg-slate-950 border-2 border-slate-800 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none text-center font-black text-2xl shadow-inner">
+                                <select id="horaSalida" required class="w-full px-2 py-3 bg-slate-950 border-2 border-slate-800 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none text-center font-black text-xl shadow-inner mx-auto">
                                     <option value="" disabled selected>--:--</option>
                                 </select>
                             </div>
@@ -557,16 +557,18 @@
             const horaSalida = document.getElementById('horaSalida').value;
 
             try {
-                // Guardamos directamente en tu base de datos de Firebase
-                await addDoc(getFichajesRef(), {
-                    operaria: operaria,
-                    fecha: fecha,
-                    diaSemana: obtenerDiaSemana(fecha),
-                    horaEntrada: horaEntrada,
-                    horaSalida: horaSalida,
-                    totalHoras: calcularTotalHoras(horaEntrada, horaSalida),
-                    timestamp: new Date().toISOString()
-                });
+                // Comprobamos si estamos online (protección para tus pruebas)
+                if(typeof __firebase_config !== 'undefined') {
+                    await addDoc(getFichajesRef(), {
+                        operaria: operaria,
+                        fecha: fecha,
+                        diaSemana: obtenerDiaSemana(fecha),
+                        horaEntrada: horaEntrada,
+                        horaSalida: horaSalida,
+                        totalHoras: calcularTotalHoras(horaEntrada, horaSalida),
+                        timestamp: new Date().toISOString()
+                    });
+                }
                 
                 // 1. Cerramos el modal
                 cerrarModalConfirmacion();
