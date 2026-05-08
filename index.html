@@ -122,7 +122,7 @@
         </div>
     </div>
 
-    <!-- Modificado: Ampliado a max-w-[1400px] para usar más pantalla en PC -->
+    <!-- Ampliado a max-w-[1400px] para usar más pantalla en PC -->
     <div class="w-full max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8">
         
         <!-- Cabecera Global -->
@@ -308,7 +308,7 @@
             </div>
         </div>
 
-        <!-- PANTALLA 4: Dashboard Admin REESTRUCTURADO -->
+        <!-- PANTALLA 4: Dashboard Admin -->
         <div id="view-admin-panel" class="view-section">
             
             <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
@@ -349,7 +349,6 @@
                 </div>
             </div>
 
-            <!-- Modificado: Vuelto a la transparencia original (bg-slate-900/60) -->
             <div class="bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-700/40 p-5 sm:p-6 transition-colors">
                 
                 <!-- SECCIÓN 1: CUADRANTE SEMANAL -->
@@ -376,7 +375,7 @@
 
                     <!-- Tabla Cuadrante -->
                     <div class="overflow-x-auto rounded-xl border border-slate-700/50 bg-slate-950/80 backdrop-blur-md">
-                        <p class="text-xs text-slate-400 p-2 text-center italic border-b border-slate-800">Toca el recuadro de las horas de un día para editar o borrar ese fichaje.</p>
+                        <p class="text-xs text-slate-400 p-2 text-center italic border-b border-slate-800">Toca cualquier recuadro (con horas o vacío) para añadir, editar o borrar registros.</p>
                         <table class="w-full text-left border-collapse min-w-[800px]">
                             <thead>
                                 <tr id="header-dias" class="bg-slate-900/80 border-b border-slate-700/50 text-slate-300 text-xs sm:text-sm transition-colors text-center">
@@ -520,7 +519,7 @@
 
     </div>
 
-    <!-- VENTANA MODAL DE CONFIRMACIÓN -->
+    <!-- VENTANA MODAL DE CONFIRMACIÓN (PARA OPERARIAS) -->
     <div id="modalConfirmacion" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-slate-900/95 border border-slate-700/60 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-sm w-full animate-fade-in relative overflow-hidden backdrop-blur-xl">
             <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
@@ -583,21 +582,35 @@
         </div>
     </div>
 
-    <!-- VENTANA MODAL EDICIÓN Y BORRADO DE FICHAJE (ADMIN) -->
+    <!-- VENTANA MODAL EDICIÓN/AÑADIR MANUAL Y BORRADO DE FICHAJE (ADMIN) -->
     <div id="modalEditarFichaje" class="hidden fixed inset-0 z-[110] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-slate-900/95 border border-slate-700/60 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-sm w-full animate-fade-in relative overflow-hidden backdrop-blur-xl">
             <div class="absolute top-0 left-0 right-0 h-1 bg-blue-500"></div>
+            
+            <!-- Hidden inputs para saber a quién se edita o dónde se añade -->
             <input type="hidden" id="edit-id">
+            <input type="hidden" id="edit-operaria">
+            <input type="hidden" id="edit-fecha">
             
             <div class="text-center mb-6">
                 <div class="bg-slate-800/80 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-400 border border-slate-700/50 shadow-inner">
-                    <i data-lucide="pencil" class="w-8 h-8"></i>
+                    <i data-lucide="calendar-check" class="w-8 h-8"></i>
                 </div>
-                <h3 class="text-xl font-black text-white">Editar Registro</h3>
+                <h3 id="edit-titulo-modal" class="text-xl font-black text-white">Gestionar Registro</h3>
                 <div id="edit-nombre-fecha" class="text-sm mt-2 leading-relaxed"></div>
             </div>
+
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-400 uppercase text-center mb-2">Tipo de Registro</label>
+                <select id="edit-tipo" onchange="toggleEditTipo()" class="w-full py-3 bg-slate-950/80 border border-slate-700/60 rounded-xl focus:ring-2 focus:ring-blue-500/50 text-white font-bold text-center appearance-none shadow-inner">
+                    <option value="HORAS">Horas Trabajadas</option>
+                    <option value="FIESTA">Fiesta</option>
+                    <option value="BAJA">Baja Médica</option>
+                    <option value="PERSONAL">Día Personal</option>
+                </select>
+            </div>
             
-            <div class="grid grid-cols-2 gap-4 mb-8">
+            <div id="edit-time-container" class="grid grid-cols-2 gap-4 mb-8">
                 <div class="space-y-2 text-center">
                     <label class="block text-xs font-bold text-slate-400 uppercase">Entrada</label>
                     <select id="edit-entrada" class="w-full py-3 bg-slate-950/80 border border-slate-700/60 rounded-xl focus:ring-2 focus:ring-blue-500/50 text-white appearance-none font-black text-xl shadow-inner mx-auto text-center"></select>
@@ -612,7 +625,7 @@
                 <button type="button" onclick="guardarEdicionFichaje()" class="w-full py-3.5 bg-emerald-600/90 hover:bg-emerald-500 border border-emerald-500/50 text-white rounded-xl font-black transition-all text-sm shadow-md flex justify-center items-center gap-2">
                     <i data-lucide="save" class="w-4 h-4"></i> GUARDAR CAMBIOS
                 </button>
-                <button type="button" onclick="borrarFichajeActivo()" class="w-full py-3.5 bg-red-900/60 hover:bg-red-800 border border-red-800/50 text-red-200 hover:text-white rounded-xl font-bold transition-all text-sm shadow-md flex justify-center items-center gap-2">
+                <button type="button" id="btn-borrar-fichaje" onclick="borrarFichajeActivo()" class="w-full py-3.5 bg-red-900/60 hover:bg-red-800 border border-red-800/50 text-red-200 hover:text-white rounded-xl font-bold transition-all text-sm shadow-md flex justify-center items-center gap-2">
                     <i data-lucide="trash-2" class="w-4 h-4"></i> ELIMINAR FICHAJE
                 </button>
                 <button type="button" onclick="cerrarModalEdicion()" class="w-full py-3 text-slate-400 hover:text-white font-bold transition-all text-sm mt-2">
@@ -948,16 +961,51 @@
         }
         setCurrentWeek();
 
-        // --- EDICIÓN Y BORRADO DE FICHAJES EN CUADRANTE ---
+        // --- EDICIÓN, AÑADIDO MANUAL Y BORRADO DE FICHAJES EN CUADRANTE ---
         window.abrirModalEdicion = function(id, operaria, fecha, entrada, salida) {
-            document.getElementById('edit-id').value = id;
+            // Se guardan los datos ocultos para usarlos en el guardado
+            document.getElementById('edit-id').value = id || '';
+            document.getElementById('edit-operaria').value = operaria;
+            document.getElementById('edit-fecha').value = fecha;
+            
             const [y, m, d] = fecha.split('-');
             document.getElementById('edit-nombre-fecha').innerHTML = `<span class="text-emerald-400 text-lg">${operaria}</span><br><span class="text-slate-400">${d}/${m}/${y}</span>`;
-            document.getElementById('edit-entrada').value = entrada;
-            document.getElementById('edit-salida').value = salida;
+            document.getElementById('edit-titulo-modal').textContent = id ? "Editar Registro" : "Añadir Registro";
+            
+            const specialStatuses = ["FIESTA", "BAJA", "PERSONAL"];
+            if (specialStatuses.includes(entrada)) {
+                document.getElementById('edit-tipo').value = entrada;
+                document.getElementById('edit-entrada').value = '';
+                document.getElementById('edit-salida').value = '';
+            } else {
+                document.getElementById('edit-tipo').value = 'HORAS';
+                document.getElementById('edit-entrada').value = entrada || '';
+                document.getElementById('edit-salida').value = salida || '';
+            }
+            window.toggleEditTipo();
+            
+            // Ocultar botón borrar si estamos añadiendo uno nuevo
+            const btnDelete = document.getElementById('btn-borrar-fichaje');
+            if(id) {
+                btnDelete.style.display = 'flex';
+            } else {
+                btnDelete.style.display = 'none';
+            }
             
             document.getElementById('modalEditarFichaje').classList.remove('hidden');
             document.getElementById('modalEditarFichaje').classList.add('flex');
+        };
+
+        window.toggleEditTipo = function() {
+            const tipo = document.getElementById('edit-tipo').value;
+            const container = document.getElementById('edit-time-container');
+            if(tipo === 'HORAS') {
+                container.classList.remove('hidden');
+                container.classList.add('grid');
+            } else {
+                container.classList.add('hidden');
+                container.classList.remove('grid');
+            }
         };
 
         window.cerrarModalEdicion = function() {
@@ -967,17 +1015,44 @@
 
         window.guardarEdicionFichaje = async function() {
             const id = document.getElementById('edit-id').value;
-            const nuevaEntrada = document.getElementById('edit-entrada').value;
-            const nuevaSalida = document.getElementById('edit-salida').value;
-            const total = calcularTotalHoras(nuevaEntrada, nuevaSalida);
+            const operaria = document.getElementById('edit-operaria').value;
+            const fecha = document.getElementById('edit-fecha').value;
+            const tipo = document.getElementById('edit-tipo').value;
+            
+            let nuevaEntrada = '';
+            let nuevaSalida = '';
+            let total = 0;
+
+            if (tipo === 'HORAS') {
+                nuevaEntrada = document.getElementById('edit-entrada').value;
+                nuevaSalida = document.getElementById('edit-salida').value;
+                if(!nuevaEntrada || !nuevaSalida) return alert("Debes indicar hora de entrada y salida.");
+                total = calcularTotalHoras(nuevaEntrada, nuevaSalida);
+            } else {
+                nuevaEntrada = tipo; 
+                nuevaSalida = '';
+                total = 0;
+            }
             
             if(!currentUser) return;
             try {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'fichajes', id), {
-                    horaEntrada: nuevaEntrada,
-                    horaSalida: nuevaSalida,
-                    totalHoras: total
-                });
+                if (id) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'fichajes', id), {
+                        horaEntrada: nuevaEntrada,
+                        horaSalida: nuevaSalida,
+                        totalHoras: total
+                    });
+                } else {
+                    await addDoc(getFichajesRef(), {
+                        operaria: operaria,
+                        fecha: fecha,
+                        diaSemana: obtenerDiaSemana(fecha),
+                        horaEntrada: nuevaEntrada,
+                        horaSalida: nuevaSalida,
+                        totalHoras: total,
+                        timestamp: new Date().toISOString()
+                    });
+                }
                 cerrarModalEdicion();
             } catch(e) {
                 alert("Error al actualizar el registro.");
@@ -986,6 +1061,7 @@
 
         window.borrarFichajeActivo = async function() {
             const id = document.getElementById('edit-id').value;
+            if(!id) return;
             if(!currentUser) return;
             if(confirm('¿Seguro que quieres eliminar este fichaje permanentemente?')) {
                 try {
@@ -1026,6 +1102,7 @@
             tbody.innerHTML = '';
 
             let trabajadoresA_Mostrar = workerFilter === 'ALL' ? NOMBRES : [workerFilter];
+            const specialStatuses = ["FIESTA", "BAJA", "PERSONAL"];
 
             trabajadoresA_Mostrar.forEach(trabajadora => {
                 let htmlFila = `<tr class="hover:bg-slate-800/40 border-b border-slate-800">
@@ -1040,17 +1117,31 @@
                     if (turnos.length > 0) {
                         let celda = `<td class="p-2 border-r border-slate-800/50 min-w-[120px] text-center"><div class="flex flex-col gap-1">`;
                         turnos.forEach(t => {
-                            // Se añade onclick para abrir la edición interactiva
-                            celda += `<div onclick="abrirModalEdicion('${t.id}', '${t.operaria}', '${t.fecha}', '${t.horaEntrada}', '${t.horaSalida}')" class="bg-emerald-900/40 border border-emerald-800/50 rounded-lg p-1.5 shadow-sm cursor-pointer hover:bg-emerald-800/80 hover:scale-[1.02] transition-all">
-                                <div class="text-[11px] font-bold text-slate-200 pointer-events-none">${t.horaEntrada} - ${t.horaSalida}</div>
-                                <div class="text-xs font-black text-emerald-400 mt-0.5 pointer-events-none">${t.totalHoras} h</div>
-                            </div>`;
-                            totalSumaH += Number(t.totalHoras);
+                            if(specialStatuses.includes(t.horaEntrada)) {
+                                let colorClass = "bg-orange-900/40 border-orange-800/50 text-orange-400";
+                                if(t.horaEntrada === 'BAJA') colorClass = "bg-red-900/40 border-red-800/50 text-red-400";
+                                else if(t.horaEntrada === 'PERSONAL') colorClass = "bg-blue-900/40 border-blue-800/50 text-blue-400";
+
+                                celda += `<div onclick="abrirModalEdicion('${t.id}', '${t.operaria}', '${t.fecha}', '${t.horaEntrada}', '${t.horaSalida}')" class="${colorClass} border rounded-lg p-2 shadow-sm cursor-pointer hover:scale-[1.02] transition-all font-black text-xs uppercase tracking-wider">
+                                    ${t.horaEntrada === 'PERSONAL' ? 'D. PERSONAL' : t.horaEntrada}
+                                </div>`;
+                            } else {
+                                celda += `<div onclick="abrirModalEdicion('${t.id}', '${t.operaria}', '${t.fecha}', '${t.horaEntrada}', '${t.horaSalida}')" class="bg-emerald-900/40 border border-emerald-800/50 rounded-lg p-1.5 shadow-sm cursor-pointer hover:bg-emerald-800/80 hover:scale-[1.02] transition-all">
+                                    <div class="text-[11px] font-bold text-slate-200 pointer-events-none">${t.horaEntrada} - ${t.horaSalida}</div>
+                                    <div class="text-xs font-black text-emerald-400 mt-0.5 pointer-events-none">${t.totalHoras} h</div>
+                                </div>`;
+                                totalSumaH += Number(t.totalHoras);
+                            }
                         });
                         celda += `</div></td>`;
                         htmlFila += celda;
                     } else {
-                        htmlFila += `<td class="p-2 border-r border-slate-800/50 min-w-[120px] text-center"><div class="text-slate-600 font-medium">-</div></td>`;
+                        htmlFila += `<td class="p-2 border-r border-slate-800/50 min-w-[120px] text-center h-full">
+                            <div onclick="abrirModalEdicion('', '${trabajadora}', '${fechaISO}', '', '')" class="w-full h-full min-h-[40px] flex items-center justify-center cursor-pointer group rounded-lg transition-colors hover:bg-slate-800/60 border border-transparent hover:border-slate-700 border-dashed">
+                                <span class="text-slate-600 font-medium group-hover:hidden">-</span>
+                                <i data-lucide="plus" class="w-4 h-4 text-emerald-500 hidden group-hover:block opacity-50"></i>
+                            </div>
+                        </td>`;
                     }
                 }
                 
@@ -1177,12 +1268,15 @@
                 return;
             }
             data.forEach(d => {
+                const especial = ["FIESTA", "BAJA", "PERSONAL"].includes(d.horaEntrada);
+                const textHoras = especial ? (d.horaEntrada === 'PERSONAL' ? 'D. PERSONAL' : d.horaEntrada) : `${d.horaEntrada} - ${d.horaSalida}`;
+                const textTotal = especial ? '-' : `${d.totalHoras} h`;
                 const [y, m, day] = d.fecha.split('-');
                 tbody.innerHTML += `<tr>
                     <td class="p-2 font-bold text-white">${d.operaria}</td>
                     <td class="p-2">${day}/${m}/${y}</td>
-                    <td class="p-2">${d.horaEntrada} - ${d.horaSalida}</td>
-                    <td class="p-2 font-bold text-emerald-400">${d.totalHoras} h</td>
+                    <td class="p-2">${textHoras}</td>
+                    <td class="p-2 font-bold text-emerald-400">${textTotal}</td>
                 </tr>`;
             });
         }
@@ -1193,8 +1287,12 @@
             
             let csvContent = "Operaria,Dia,Fecha,Entrada,Salida,Total Horas\n";
             data.forEach(reg => {
+                const especial = ["FIESTA", "BAJA", "PERSONAL"].includes(reg.horaEntrada);
+                const expEntrada = especial ? reg.horaEntrada : reg.horaEntrada;
+                const expSalida = especial ? '-' : reg.horaSalida;
+                const expTotal = especial ? '-' : reg.totalHoras;
                 const [y, m, d] = reg.fecha.split('-');
-                csvContent += `"${reg.operaria}","${reg.diaSemana}","${d}/${m}/${y}","${reg.horaEntrada}","${reg.horaSalida}","${reg.totalHoras}"\n`;
+                csvContent += `"${reg.operaria}","${reg.diaSemana}","${d}/${m}/${y}","${expEntrada}","${expSalida}","${expTotal}"\n`;
             });
             const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
@@ -1225,8 +1323,15 @@
 
             // Preparar datos para autoTable
             const bodyData = data.map(r => {
+                const especial = ["FIESTA", "BAJA", "PERSONAL"].includes(r.horaEntrada);
                 const [y, m, d] = r.fecha.split('-');
-                return [r.operaria, `${d}/${m}/${y} (${r.diaSemana})`, r.horaEntrada, r.horaSalida, `${r.totalHoras} h`];
+                return [
+                    r.operaria, 
+                    `${d}/${m}/${y} (${r.diaSemana})`, 
+                    especial ? r.horaEntrada : r.horaEntrada, 
+                    especial ? '-' : r.horaSalida, 
+                    especial ? '-' : `${r.totalHoras} h`
+                ];
             });
 
             // Generar Tabla
