@@ -18,7 +18,7 @@
         /* IMAGEN DE FONDO BOTÁNICA                                 */
         /* ======================================================== */
         :root {
-            --bg-image: url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80');
+            --bg-image: url('https://raw.githubusercontent.com/AVS-PROJECTS33/La_mediterrania/main/Gemini_Generated_Image_5gwb1i5gwb1i5gwb.png');
         }
 
         body { 
@@ -192,7 +192,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" id="btnSubmit" class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 px-6 rounded-xl transition-all text-lg shadow-lg mt-6 active:scale-[0.98]">
+                        <button type="submit" id="btnPeticionGuardar" class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 px-6 rounded-xl transition-all text-lg shadow-lg mt-6 active:scale-[0.98]">
                             <i data-lucide="check-circle" class="w-6 h-6"></i>
                             GUARDAR FICHAJE
                         </button>
@@ -291,6 +291,46 @@
 
     </div>
 
+    <!-- VENTANA MODAL DE CONFIRMACIÓN -->
+    <div id="modalConfirmacion" class="hidden fixed inset-0 z-50 bg-stone-900/90 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-stone-800 border border-stone-700 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-sm w-full animate-fade-in relative overflow-hidden">
+            <!-- Efecto de luz superior -->
+            <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
+            
+            <div class="text-center mb-6">
+                <div class="bg-stone-900/60 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-400 border border-stone-700/50">
+                    <i data-lucide="help-circle" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-black text-white">¿Confirmar turno?</h3>
+                <p class="text-sm text-stone-400 mt-1">Revisa que los datos sean correctos</p>
+            </div>
+            
+            <div class="bg-stone-900 rounded-2xl p-5 mb-6 border border-stone-700 shadow-inner space-y-3">
+                <div class="flex justify-between items-center border-b border-stone-800 pb-2">
+                    <span class="text-stone-400 text-sm font-medium">Operaria</span>
+                    <span id="conf-nombre" class="font-bold text-white text-base"></span>
+                </div>
+                <div class="flex justify-between items-center border-b border-stone-800 pb-2">
+                    <span class="text-stone-400 text-sm font-medium">Fecha</span>
+                    <span id="conf-fecha" class="font-bold text-white text-base"></span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-stone-400 text-sm font-medium">Horario</span>
+                    <span class="font-black text-emerald-400 text-lg tracking-wide"><span id="conf-entrada"></span> - <span id="conf-salida"></span></span>
+                </div>
+            </div>
+            
+            <div class="flex gap-3 mt-8">
+                <button type="button" onclick="cerrarModalConfirmacion()" class="flex-1 py-3.5 px-4 bg-stone-700 hover:bg-stone-600 text-white rounded-xl font-bold transition-all text-sm shadow-md">
+                    Cancelar
+                </button>
+                <button type="button" id="btnConfirmarFinal" onclick="ejecutarGuardadoFirebase()" class="flex-[1.5] py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black transition-all text-sm shadow-md flex justify-center items-center gap-2">
+                    <i data-lucide="check" class="w-5 h-5"></i> SÍ, GUARDAR
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase y Lógica -->
     <script type="module">
         // --- NAVEGACIÓN Y UI (Ubicado al principio para que NUNCA falle) ---
@@ -302,6 +342,7 @@
                 window.resetWizard();
                 document.getElementById('adminLoginForm').reset();
                 document.getElementById('errorPinAdmin').classList.add('hidden');
+                window.cerrarModalConfirmacion(); // Por seguridad
             }
         };
 
@@ -314,6 +355,8 @@
         const userBadge = document.getElementById('user-badge');
         const activeUserName = document.getElementById('active-user-name');
         const msgExito = document.getElementById('msgExito');
+        const modalConfirmacion = document.getElementById('modalConfirmacion');
+        
         const PIN_OPERARIAS = "1234";
         const PIN_ADMIN = "admin123";
 
@@ -387,6 +430,36 @@
             return dias[new Date(partes[0], partes[1] - 1, partes[2]).getDay()];
         }
 
+        // --- LÓGICA DEL MODAL DE CONFIRMACIÓN ---
+        window.cerrarModalConfirmacion = function() {
+            modalConfirmacion.classList.add('hidden');
+            modalConfirmacion.classList.remove('flex');
+        };
+
+        // En lugar de guardar directamente, mostramos el modal
+        document.getElementById('fichajeForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (pinInput.value !== PIN_OPERARIAS) return;
+
+            // Rellenar datos en el modal
+            document.getElementById('conf-nombre').textContent = operariaSelect.value;
+            
+            // Formatear la fecha a dd/mm/yyyy para que sea más legible en España
+            const fechaCruda = document.getElementById('fecha').value;
+            if(fechaCruda) {
+                const [anio, mes, dia] = fechaCruda.split('-');
+                document.getElementById('conf-fecha').textContent = `${dia}/${mes}/${anio}`;
+            }
+
+            document.getElementById('conf-entrada').textContent = document.getElementById('horaEntrada').value;
+            document.getElementById('conf-salida').textContent = document.getElementById('horaSalida').value;
+
+            // Mostrar el modal
+            modalConfirmacion.classList.remove('hidden');
+            modalConfirmacion.classList.add('flex');
+        });
+
+
         // --- IMPORTACIONES DE FIREBASE ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -431,49 +504,57 @@
 
         initAuth();
 
-        // Guardar Fichaje
-        document.getElementById('fichajeForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (pinInput.value !== PIN_OPERARIAS) return;
+        // Esta es la función que realmente guarda el fichaje cuando dicen "Sí, guardar" en el modal
+        window.ejecutarGuardadoFirebase = async function() {
+            const btnConfirmarFinal = document.getElementById('btnConfirmarFinal');
+            
+            // Cambiamos el botón a estado "Cargando"
+            const originalContent = btnConfirmarFinal.innerHTML;
+            btnConfirmarFinal.disabled = true;
+            btnConfirmarFinal.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Guardando...`;
+            lucide.createIcons();
 
-            const btnSubmit = document.getElementById('btnSubmit');
             const operaria = operariaSelect.value;
             const fecha = document.getElementById('fecha').value;
             const horaEntrada = document.getElementById('horaEntrada').value;
             const horaSalida = document.getElementById('horaSalida').value;
-            
-            btnSubmit.disabled = true;
-            btnSubmit.innerHTML = `<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> REGISTRANDO...`;
-            lucide.createIcons();
 
             try {
-                await addDoc(getFichajesRef(), {
-                    operaria: operaria,
-                    fecha: fecha,
-                    diaSemana: obtenerDiaSemana(fecha),
-                    horaEntrada: horaEntrada,
-                    horaSalida: horaSalida,
-                    totalHoras: calcularTotalHoras(horaEntrada, horaSalida),
-                    timestamp: new Date().toISOString()
-                });
+                // Comprobamos si estamos online (protección para tus pruebas)
+                if(typeof __firebase_config !== 'undefined') {
+                    await addDoc(getFichajesRef(), {
+                        operaria: operaria,
+                        fecha: fecha,
+                        diaSemana: obtenerDiaSemana(fecha),
+                        horaEntrada: horaEntrada,
+                        horaSalida: horaSalida,
+                        totalHoras: calcularTotalHoras(horaEntrada, horaSalida),
+                        timestamp: new Date().toISOString()
+                    });
+                }
                 
+                // 1. Cerramos el modal
+                cerrarModalConfirmacion();
+                // 2. Ocultamos el formulario
                 step3.classList.add('hidden');
                 userBadge.classList.add('hidden');
+                // 3. Mostramos el mensaje de éxito central
                 msgExito.classList.remove('hidden');
                 
+                // 4. Volvemos al inicio y reseteamos el botón tras unos segundos
                 setTimeout(() => { 
                     navigateTo('home');
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6"></i> GUARDAR FICHAJE`;
+                    btnConfirmarFinal.disabled = false;
+                    btnConfirmarFinal.innerHTML = originalContent;
                     lucide.createIcons();
                 }, 3000);
             } catch (error) {
                 alert("Error al intentar guardar. Revisa tu conexión a internet.");
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6"></i> GUARDAR FICHAJE`;
+                btnConfirmarFinal.disabled = false;
+                btnConfirmarFinal.innerHTML = originalContent;
                 lucide.createIcons();
             }
-        });
+        };
 
         // Formulario Admin Login
         document.getElementById('adminLoginForm').addEventListener('submit', (e) => {
