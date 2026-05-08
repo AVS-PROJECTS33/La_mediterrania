@@ -33,8 +33,8 @@
 
         body { 
             font-family: 'Inter', system-ui, sans-serif; 
-            /* Capa azul oscuro (slate-900) semitransparente sobre la imagen de fondo */
-            background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.95)), var(--bg-image);
+            /* Se quita el linear-gradient para mostrar la imagen con su color original puro */
+            background-image: var(--bg-image);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -60,28 +60,51 @@
             margin: 0; 
         }
         
-        /* Forzar centrado estricto en móviles/iOS para Selects y Fechas */
+        /* ======================================================== */
+        /* FORZAR CENTRADO ESTRICTO EN iOS (IPHONE/IPAD)            */
+        /* ======================================================== */
+        select, input[type="date"] {
+            text-align: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        
         select {
-            text-align: center;
-            text-align-last: center;
+            text-align-last: center !important;
         }
-        input[type="date"] {
-            text-align: center;
-            justify-content: center;
-        }
+        
+        /* Modificadores internos de WebKit (Apple) para centrar fechas */
         input[type="date"]::-webkit-datetime-edit {
-            justify-content: center;
-            text-align: center;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 100% !important;
+            padding: 0 !important;
         }
+        
+        input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+            display: flex !important;
+            justify-content: center !important;
+            padding: 0 !important;
+        }
+        
         input[type="date"]::-webkit-date-and-time-value {
-            text-align: center;
+            text-align: center !important;
+            margin: 0 !important;
+        }
+        
+        /* Ocultar elementos nativos que empujan el texto hacia la izquierda */
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="date"]::-webkit-clear-button {
+            display: none !important;
+            -webkit-appearance: none;
         }
     </style>
 </head>
 <body class="min-h-screen selection:bg-emerald-900">
 
     <!-- Mensaje Flotante de Instalación iOS (El "Truco") -->
-    <div id="ios-prompt" class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] w-11/12 max-w-sm bg-slate-900/95 backdrop-blur-xl border border-slate-800/50 p-4 rounded-3xl shadow-2xl text-white animate-fade-in">
+    <div id="ios-prompt" class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] w-11/12 max-w-sm bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 p-4 rounded-3xl shadow-2xl text-white animate-fade-in">
         <div class="flex items-start gap-4">
             <!-- Previsualización del Logo recortado en redondo (Logo azul y blanco) -->
             <img src="https://raw.githubusercontent.com/AVS-PROJECTS33/La_mediterrania/main/Gemini_Generated_Image_m2vh8km2vh8km2vh.png" alt="Logo App" class="w-14 h-14 rounded-full object-cover border-2 border-slate-700 shadow-md shrink-0">
@@ -98,21 +121,21 @@
     <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
         
         <!-- Cabecera Global -->
-        <header class="flex items-center justify-between mb-8 bg-slate-900/80 backdrop-blur-md p-4 md:p-5 rounded-2xl shadow-lg border border-slate-800/50">
+        <header class="flex items-center justify-between mb-8 bg-slate-900/60 backdrop-blur-md p-4 md:p-5 rounded-2xl shadow-lg border border-slate-700/40">
             <!-- Izquierda: Logo Olas y Título -->
             <div class="flex items-center gap-3 md:gap-4 cursor-pointer" onclick="navigateTo('home')" title="Volver al inicio">
                 <div class="text-emerald-400 p-1">
-                    <i data-lucide="waves" class="w-8 h-8 md:w-10 md:h-10"></i>
+                    <i data-lucide="waves" class="w-8 h-8 md:w-10 md:h-10 drop-shadow-md"></i>
                 </div>
                 <div>
-                    <h1 class="text-4xl md:text-5xl font-normal text-white leading-none font-logo pr-2 pb-1">La Mediterrania</h1>
-                    <p class="text-[10px] md:text-xs font-bold text-emerald-400 uppercase tracking-[0.3em] mt-0 ml-1">Control Horario</p>
+                    <h1 class="text-4xl md:text-5xl font-normal text-white leading-none font-logo pr-2 pb-1 drop-shadow-md">La Mediterrania</h1>
+                    <p class="text-[10px] md:text-xs font-bold text-emerald-400 uppercase tracking-[0.3em] mt-0 ml-1 drop-shadow-sm">Control Horario</p>
                 </div>
             </div>
 
             <!-- Derecha: Admin -->
             <div class="flex items-center">
-                <button onclick="navigateTo('admin-login')" class="flex items-center gap-2 bg-slate-100 hover:bg-white text-slate-950 px-4 py-2 md:py-2.5 rounded-xl font-bold text-xs sm:text-sm shadow-md transition-all">
+                <button onclick="navigateTo('admin-login')" class="flex items-center gap-2 bg-slate-800/80 hover:bg-white/90 text-white hover:text-slate-950 px-4 py-2 md:py-2.5 rounded-xl font-bold text-xs sm:text-sm shadow-md transition-all border border-slate-700/50 backdrop-blur-sm">
                     <i data-lucide="lock" class="w-4 h-4"></i> <span class="hidden sm:inline">Admin</span>
                 </button>
             </div>
@@ -123,51 +146,52 @@
         <!-- PANTALLA 1: Inicio (Para Empleados) -->
         <div id="view-home" class="view-section active max-w-md mx-auto mt-12 md:mt-20">
             <div class="text-center mb-10">
-                <h2 class="text-3xl md:text-4xl font-black text-white mb-2">Bienvenido/a</h2>
-                <p class="text-slate-400 font-medium text-lg">Selecciona para registrar tu turno</p>
+                <h2 class="text-3xl md:text-4xl font-black text-white mb-2 drop-shadow-md">Bienvenido/a</h2>
+                <p class="text-slate-200 font-medium text-lg drop-shadow-sm">Selecciona para registrar tu turno</p>
             </div>
             
             <!-- Botón Gigante de Fichajes -->
-            <button onclick="navigateTo('fichar')" class="w-full group relative flex flex-col items-center justify-center p-10 bg-slate-900/90 backdrop-blur-md rounded-[2rem] shadow-xl hover:shadow-2xl border border-slate-800/50 hover:border-emerald-500 transition-all text-center transform hover:-translate-y-1">
-                <div class="bg-emerald-900/40 p-6 rounded-full text-emerald-400 mb-6 group-hover:scale-110 transition-transform shadow-inner border border-emerald-800/50">
+            <button onclick="navigateTo('fichar')" class="w-full group relative flex flex-col items-center justify-center p-10 bg-slate-900/60 backdrop-blur-lg rounded-[2rem] shadow-xl hover:shadow-2xl border border-slate-700/50 hover:border-emerald-500/70 transition-all text-center transform hover:-translate-y-1">
+                <div class="bg-emerald-900/50 p-6 rounded-full text-emerald-400 mb-6 group-hover:scale-110 transition-transform shadow-inner border border-emerald-800/50">
                     <i data-lucide="clock" class="w-12 h-12"></i>
                 </div>
-                <h3 class="text-3xl font-black text-white mb-2 tracking-wide uppercase">FICHAJES</h3>
-                <p class="text-slate-400 font-medium">Anotar entrada y salida diaria</p>
+                <h3 class="text-3xl font-black text-white mb-2 tracking-wide uppercase drop-shadow-md">FICHAJES</h3>
+                <p class="text-slate-300 font-medium">Anotar entrada y salida diaria</p>
             </button>
         </div>
 
         <!-- PANTALLA 2: Fichaje (Formulario Wizard Paso a Paso) -->
         <div id="view-fichar" class="view-section max-w-md mx-auto">
             <div class="mb-6 flex items-center justify-between">
-                <button onclick="navigateTo('home')" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors bg-slate-900/60 backdrop-blur px-3 py-1.5 rounded-lg shadow-sm border border-slate-800/50">
+                <button onclick="navigateTo('home')" class="flex items-center gap-2 text-sm font-medium text-slate-200 hover:text-emerald-400 transition-colors bg-slate-900/60 backdrop-blur-md px-3 py-1.5 rounded-lg shadow-sm border border-slate-700/40">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al inicio
                 </button>
                 
                 <!-- Identificador de Operaria -->
-                <button id="user-badge" type="button" onclick="resetWizard()" class="hidden flex items-center gap-2 text-xs font-bold bg-emerald-900/50 text-emerald-300 px-3 py-1.5 rounded-lg border border-emerald-800 transition-all hover:bg-emerald-800/70" title="Cambiar de operaria">
+                <button id="user-badge" type="button" onclick="resetWizard()" class="hidden flex items-center gap-2 text-xs font-bold bg-emerald-900/60 backdrop-blur text-emerald-300 px-3 py-1.5 rounded-lg border border-emerald-800/60 transition-all hover:bg-emerald-800/70" title="Cambiar de operaria">
                     <i data-lucide="user" class="w-3.5 h-3.5"></i>
                     <span id="active-user-name">Nombre</span>
                     <i data-lucide="x" class="w-3.5 h-3.5 ml-1 opacity-60"></i>
                 </button>
             </div>
             
-            <div class="bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-800/50 p-6 sm:p-8 transition-colors min-h-[300px] flex flex-col justify-center">
+            <div class="bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-700/40 p-6 sm:p-8 transition-colors min-h-[300px] flex flex-col justify-center">
                 
                 <form id="fichajeForm" class="w-full">
                     
                     <!-- PASO 1: Trabajadora -->
                     <div id="step-1-name" class="space-y-4 animate-fade-in">
                         <div class="text-center mb-6">
-                            <div class="bg-emerald-900/40 border border-emerald-800/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-400">
+                            <div class="bg-emerald-900/50 border border-emerald-800/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-400 shadow-inner">
                                 <i data-lucide="users" class="w-8 h-8"></i>
                             </div>
-                            <h2 class="text-xl font-bold text-white">¿Quién eres?</h2>
-                            <p class="text-sm text-slate-400 mt-1">Selecciona tu nombre en la lista</p>
+                            <h2 class="text-xl font-bold text-white drop-shadow-md">¿Quién eres?</h2>
+                            <p class="text-sm text-slate-300 mt-1">Selecciona tu nombre en la lista</p>
                         </div>
                         
                         <div class="relative max-w-sm mx-auto">
-                            <select id="operaria" required class="w-full px-4 py-4 bg-slate-950 border-2 border-slate-800 rounded-2xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none font-bold text-xl cursor-pointer text-center shadow-inner">
+                            <!-- Se han quitado los padding horizontales (px) para forzar el centro -->
+                            <select id="operaria" required class="w-full py-4 bg-slate-900/80 border border-slate-700/60 rounded-2xl focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 text-white transition-colors appearance-none font-bold text-lg sm:text-xl cursor-pointer shadow-inner backdrop-blur-sm">
                                 <option value="" disabled selected>Toca para elegir...</option>
                                 <option value="Sol">Sol</option>
                                 <option value="Denise">Denise</option>
@@ -182,18 +206,18 @@
                     <!-- PASO 2: PIN Operaria -->
                     <div id="step-2-pin" class="hidden space-y-4 animate-fade-in">
                         <div class="text-center mb-6">
-                            <div class="bg-slate-950/60 border border-slate-800 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                            <div class="bg-slate-800/60 border border-slate-700/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300 shadow-inner">
                                 <i data-lucide="lock-keyhole" class="w-8 h-8"></i>
                             </div>
-                            <h2 class="text-xl font-bold text-white">Introduce tu PIN</h2>
-                            <p class="text-sm text-slate-400 mt-1">Para confirmar que eres tú</p>
+                            <h2 class="text-xl font-bold text-white drop-shadow-md">Introduce tu PIN</h2>
+                            <p class="text-sm text-slate-300 mt-1">Para confirmar que eres tú</p>
                         </div>
 
                         <div class="relative max-w-xs mx-auto">
-                            <input type="number" inputmode="numeric" id="pinOperaria" required placeholder="****" class="w-full px-4 py-4 bg-slate-950 border-2 border-slate-800 rounded-2xl focus:ring-0 focus:border-emerald-500 text-white transition-colors font-black text-3xl tracking-[0.5em] text-center shadow-inner">
+                            <input type="number" inputmode="numeric" id="pinOperaria" required placeholder="****" class="w-full py-4 bg-slate-900/80 border border-slate-700/60 rounded-2xl focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 text-white transition-colors font-black text-3xl tracking-[0.5em] shadow-inner backdrop-blur-sm">
                         </div>
                         
-                        <div id="errorPinOperaria" class="hidden text-center mt-3 p-3 bg-red-900/40 text-red-400 rounded-xl border border-red-800/50 text-sm font-bold max-w-xs mx-auto">
+                        <div id="errorPinOperaria" class="hidden text-center mt-3 p-3 bg-red-900/50 backdrop-blur-sm text-red-300 rounded-xl border border-red-800/50 text-sm font-bold max-w-xs mx-auto">
                             <i data-lucide="alert-circle" class="w-4 h-4 inline-block mr-1 relative -top-0.5"></i> PIN incorrecto
                         </div>
                     </div>
@@ -201,46 +225,46 @@
                     <!-- PASO 3: Detalles y Guardar -->
                     <div id="step-3-details" class="hidden space-y-6 animate-fade-in">
                         <div class="text-center mb-6">
-                            <div class="bg-emerald-900/40 border border-emerald-800/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-400">
+                            <div class="bg-emerald-900/50 border border-emerald-800/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-400 shadow-inner">
                                 <i data-lucide="calendar-clock" class="w-8 h-8"></i>
                             </div>
-                            <h2 class="text-xl font-bold text-white">Detalles del Turno</h2>
+                            <h2 class="text-xl font-bold text-white drop-shadow-md">Detalles del Turno</h2>
                         </div>
 
                         <!-- Fecha -->
                         <div class="space-y-2 text-center max-w-[250px] mx-auto">
-                            <label class="block text-sm font-bold text-slate-300">Día trabajado</label>
-                            <input type="date" id="fecha" required class="w-full px-2 py-3 bg-slate-950 border-2 border-slate-800 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors font-bold text-base text-center shadow-inner block mx-auto" style="color-scheme: dark;">
+                            <label class="block text-sm font-bold text-slate-300 drop-shadow-sm">Día trabajado</label>
+                            <input type="date" id="fecha" required class="w-full py-3 bg-slate-900/80 border border-slate-700/60 rounded-xl focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 text-white transition-colors font-bold text-base shadow-inner block mx-auto backdrop-blur-sm" style="color-scheme: dark;">
                         </div>
 
                         <!-- Hora Entrada y Salida -->
                         <div class="grid grid-cols-2 gap-4 max-w-[280px] mx-auto">
                             <div class="space-y-2 text-center">
-                                <label class="block text-sm font-bold text-slate-300">Entrada</label>
-                                <select id="horaEntrada" required class="w-full px-2 py-3 bg-slate-950 border-2 border-slate-800 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none text-center font-black text-xl shadow-inner mx-auto">
+                                <label class="block text-sm font-bold text-slate-300 drop-shadow-sm">Entrada</label>
+                                <select id="horaEntrada" required class="w-full py-3 bg-slate-900/80 border border-slate-700/60 rounded-xl focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 text-white transition-colors appearance-none font-black text-xl shadow-inner mx-auto backdrop-blur-sm">
                                     <option value="" disabled selected>--:--</option>
                                 </select>
                             </div>
                             <div class="space-y-2 text-center">
-                                <label class="block text-sm font-bold text-slate-300">Salida</label>
-                                <select id="horaSalida" required class="w-full px-2 py-3 bg-slate-950 border-2 border-slate-800 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none text-center font-black text-xl shadow-inner mx-auto">
+                                <label class="block text-sm font-bold text-slate-300 drop-shadow-sm">Salida</label>
+                                <select id="horaSalida" required class="w-full py-3 bg-slate-900/80 border border-slate-700/60 rounded-xl focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 text-white transition-colors appearance-none font-black text-xl shadow-inner mx-auto backdrop-blur-sm">
                                     <option value="" disabled selected>--:--</option>
                                 </select>
                             </div>
                         </div>
 
-                        <button type="submit" id="btnPeticionGuardar" class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 px-6 rounded-xl transition-all text-lg shadow-lg mt-6 active:scale-[0.98]">
+                        <button type="submit" id="btnPeticionGuardar" class="w-full flex items-center justify-center gap-2 bg-emerald-600/90 hover:bg-emerald-500 backdrop-blur-sm text-white font-black py-4 px-6 rounded-xl transition-all text-lg shadow-lg mt-6 active:scale-[0.98] border border-emerald-500/50">
                             <i data-lucide="check-circle" class="w-6 h-6"></i>
                             GUARDAR FICHAJE
                         </button>
                     </div>
                     
                     <div id="msgExito" class="hidden flex-col items-center justify-center text-center p-8 animate-fade-in">
-                        <div class="w-20 h-20 bg-emerald-900/50 border border-emerald-800/50 text-emerald-400 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                        <div class="w-20 h-20 bg-emerald-900/60 border border-emerald-800/60 text-emerald-400 rounded-full flex items-center justify-center mb-4 shadow-lg backdrop-blur-sm">
                             <i data-lucide="party-popper" class="w-10 h-10"></i>
                         </div>
-                        <h2 class="text-2xl font-black text-white mb-2">¡Completado!</h2>
-                        <p class="text-slate-400 font-medium">El turno se ha guardado correctamente.</p>
+                        <h2 class="text-2xl font-black text-white mb-2 drop-shadow-md">¡Completado!</h2>
+                        <p class="text-slate-300 font-medium">El turno se ha guardado correctamente.</p>
                     </div>
 
                 </form>
@@ -250,27 +274,27 @@
         <!-- PANTALLA 3: Login Admin -->
         <div id="view-admin-login" class="view-section max-w-md mx-auto mt-12">
             <div class="mb-6 flex items-center">
-                <button onclick="navigateTo('home')" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors bg-slate-900/60 backdrop-blur px-3 py-1.5 rounded-lg shadow-sm border border-slate-800/50">
+                <button onclick="navigateTo('home')" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors bg-slate-900/60 backdrop-blur px-3 py-1.5 rounded-lg shadow-sm border border-slate-700/40">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al inicio
                 </button>
             </div>
             
-            <div class="bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-800/50 p-8 text-center transition-colors">
-                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-100 text-slate-950 mb-6 shadow-lg">
+            <div class="bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-700/40 p-8 text-center transition-colors">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-800/80 border border-slate-700/50 text-white mb-6 shadow-lg backdrop-blur-sm">
                     <i data-lucide="shield" class="w-10 h-10"></i>
                 </div>
-                <h2 class="text-2xl font-black mb-2 text-white uppercase tracking-wide">Control Admin</h2>
-                <p class="text-sm text-slate-400 mb-8 font-medium">Acceso exclusivo para gestión de registros.</p>
+                <h2 class="text-2xl font-black mb-2 text-white uppercase tracking-wide drop-shadow-md">Control Admin</h2>
+                <p class="text-sm text-slate-300 mb-8 font-medium">Acceso exclusivo para gestión de registros.</p>
                 
                 <form id="adminLoginForm" class="space-y-5 text-left">
                     <div>
                         <div class="relative">
-                            <i data-lucide="key" class="absolute left-4 top-3.5 w-5 h-5 text-slate-500"></i>
-                            <input type="password" id="pinAdmin" required placeholder="Contraseña..." class="w-full pl-12 pr-4 py-3.5 bg-slate-950 border-2 border-slate-800 rounded-xl focus:ring-2 focus:ring-slate-100 focus:border-slate-100 text-white transition-shadow text-center tracking-[0.3em] font-mono text-lg font-bold">
+                            <i data-lucide="key" class="absolute left-4 top-3.5 w-5 h-5 text-slate-400"></i>
+                            <input type="password" id="pinAdmin" required placeholder="Contraseña..." class="w-full pl-12 pr-4 py-3.5 bg-slate-900/80 border border-slate-700/60 rounded-xl focus:ring-2 focus:ring-slate-400 focus:border-slate-400 text-white transition-shadow text-center tracking-[0.3em] font-mono text-lg font-bold backdrop-blur-sm">
                         </div>
                     </div>
                     
-                    <div id="errorPinAdmin" class="hidden text-center p-3 bg-red-900/40 text-red-400 text-sm font-bold rounded-xl border border-red-800/50">
+                    <div id="errorPinAdmin" class="hidden text-center p-3 bg-red-900/50 backdrop-blur-sm text-red-300 text-sm font-bold rounded-xl border border-red-800/50">
                         Contraseña incorrecta
                     </div>
 
@@ -285,31 +309,31 @@
         <!-- PANTALLA 4: Dashboard Admin -->
         <div id="view-admin-panel" class="view-section">
             <div class="mb-6 flex items-center justify-between">
-                <button onclick="cerrarSesionAdmin()" class="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors bg-slate-900/80 backdrop-blur border border-slate-800/50 px-4 py-2 rounded-lg font-bold shadow-sm">
+                <button onclick="cerrarSesionAdmin()" class="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors bg-slate-900/80 backdrop-blur border border-slate-700/40 px-4 py-2 rounded-lg font-bold shadow-sm">
                     <i data-lucide="log-out" class="w-4 h-4"></i> Cerrar Panel
                 </button>
             </div>
 
-            <div class="bg-slate-900/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-800/50 p-6 transition-colors">
+            <div class="bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-700/40 p-6 transition-colors">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
-                        <h2 class="text-2xl font-black flex items-center gap-3 text-white">
-                            <i data-lucide="layout-dashboard" class="w-7 h-7 text-slate-100"></i>
+                        <h2 class="text-2xl font-black flex items-center gap-3 text-white drop-shadow-md">
+                            <i data-lucide="layout-dashboard" class="w-7 h-7 text-slate-100 drop-shadow-md"></i>
                             Panel de Administración
                         </h2>
-                        <p class="text-sm text-slate-400 mt-1 font-medium">Todos los registros se actualizan en tiempo real.</p>
+                        <p class="text-sm text-slate-300 mt-1 font-medium drop-shadow-sm">Todos los registros se actualizan en tiempo real.</p>
                     </div>
-                    <button onclick="exportarCSV()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-md w-full md:w-auto justify-center">
+                    <button onclick="exportarCSV()" class="flex items-center gap-2 bg-emerald-600/90 hover:bg-emerald-500 backdrop-blur-sm border border-emerald-500/50 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-md w-full md:w-auto justify-center">
                         <i data-lucide="file-spreadsheet" class="w-5 h-5"></i>
                         Exportar Excel (CSV)
                     </button>
                 </div>
 
                 <!-- Tabla -->
-                <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950">
+                <div class="overflow-x-auto rounded-xl border border-slate-700/50 bg-slate-900/80 backdrop-blur-md">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-950/50 border-b border-slate-800 text-slate-400 text-sm transition-colors">
+                            <tr class="bg-slate-950/50 border-b border-slate-700/50 text-slate-300 text-sm transition-colors">
                                 <th class="p-4 font-bold uppercase tracking-wider">Operaria</th>
                                 <th class="p-4 font-bold uppercase tracking-wider">Día</th>
                                 <th class="p-4 font-bold uppercase tracking-wider">Fecha</th>
@@ -318,8 +342,8 @@
                                 <th class="p-4 font-bold uppercase tracking-wider text-right">Acción</th>
                             </tr>
                         </thead>
-                        <tbody id="tablaRegistros" class="text-sm divide-y divide-slate-800/50 transition-colors">
-                            <tr><td colspan="6" class="p-8 text-center text-slate-500 font-medium">Cargando registros sincronizados...</td></tr>
+                        <tbody id="tablaRegistros" class="text-sm divide-y divide-slate-700/40 transition-colors">
+                            <tr><td colspan="6" class="p-8 text-center text-slate-400 font-medium">Cargando registros sincronizados...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -329,39 +353,39 @@
     </div>
 
     <!-- VENTANA MODAL DE CONFIRMACIÓN -->
-    <div id="modalConfirmacion" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-sm w-full animate-fade-in relative overflow-hidden">
+    <div id="modalConfirmacion" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900/95 border border-slate-700/60 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-sm w-full animate-fade-in relative overflow-hidden backdrop-blur-xl">
             <!-- Efecto de luz superior -->
             <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
             
             <div class="text-center mb-6">
-                <div class="bg-slate-950/60 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-400 border border-slate-800/50">
+                <div class="bg-slate-800/80 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-400 border border-slate-700/50 shadow-inner">
                     <i data-lucide="help-circle" class="w-8 h-8"></i>
                 </div>
                 <h3 class="text-2xl font-black text-white">¿Confirmar turno?</h3>
                 <p class="text-sm text-slate-400 mt-1">Revisa que los datos sean correctos</p>
             </div>
             
-            <div class="bg-slate-950 rounded-2xl p-5 mb-6 border border-slate-800 shadow-inner space-y-3">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+            <div class="bg-slate-950/60 rounded-2xl p-5 mb-6 border border-slate-800/60 shadow-inner space-y-3">
+                <div class="flex justify-between items-center border-b border-slate-800/60 pb-2">
                     <span class="text-slate-400 text-sm font-medium">Operaria</span>
-                    <span id="conf-nombre" class="font-bold text-white text-base"></span>
+                    <span id="conf-nombre" class="font-bold text-white text-base drop-shadow-sm"></span>
                 </div>
-                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                <div class="flex justify-between items-center border-b border-slate-800/60 pb-2">
                     <span class="text-slate-400 text-sm font-medium">Fecha</span>
-                    <span id="conf-fecha" class="font-bold text-white text-base"></span>
+                    <span id="conf-fecha" class="font-bold text-white text-base drop-shadow-sm"></span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-slate-400 text-sm font-medium">Horario</span>
-                    <span class="font-black text-emerald-400 text-lg tracking-wide"><span id="conf-entrada"></span> - <span id="conf-salida"></span></span>
+                    <span class="font-black text-emerald-400 text-lg tracking-wide drop-shadow-sm"><span id="conf-entrada"></span> - <span id="conf-salida"></span></span>
                 </div>
             </div>
             
             <div class="flex gap-3 mt-8">
-                <button type="button" onclick="cerrarModalConfirmacion()" class="flex-1 py-3.5 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-all text-sm shadow-md">
+                <button type="button" onclick="cerrarModalConfirmacion()" class="flex-1 py-3.5 px-4 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/50 text-white rounded-xl font-bold transition-all text-sm shadow-md">
                     Cancelar
                 </button>
-                <button type="button" id="btnConfirmarFinal" onclick="ejecutarGuardadoFirebase()" class="flex-[1.5] py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black transition-all text-sm shadow-md flex justify-center items-center gap-2">
+                <button type="button" id="btnConfirmarFinal" onclick="ejecutarGuardadoFirebase()" class="flex-[1.5] py-3.5 px-4 bg-emerald-600/90 hover:bg-emerald-500 border border-emerald-500/50 text-white rounded-xl font-black transition-all text-sm shadow-md flex justify-center items-center gap-2">
                     <i data-lucide="check" class="w-5 h-5"></i> SÍ, GUARDAR
                 </button>
             </div>
@@ -651,28 +675,28 @@
             tbody.innerHTML = '';
 
             if (registrosGlobales.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-500 font-medium">Aún no hay fichajes.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 font-medium">Aún no hay fichajes.</td></tr>`;
                 return;
             }
 
             registrosGlobales.forEach(reg => {
                 const [y, m, d] = reg.fecha.split('-');
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800/50 transition-colors";
+                tr.className = "hover:bg-slate-800/60 transition-colors";
                 tr.innerHTML = `
                     <td class="p-4 font-black text-slate-100">${reg.operaria}</td>
-                    <td class="p-4 text-slate-400 text-xs uppercase font-bold tracking-wide">${reg.diaSemana}</td>
-                    <td class="p-4 text-slate-300 font-medium">${d}/${m}/${y}</td>
+                    <td class="p-4 text-slate-300 text-xs uppercase font-bold tracking-wide">${reg.diaSemana}</td>
+                    <td class="p-4 text-slate-200 font-medium">${d}/${m}/${y}</td>
                     <td class="p-4">
                         <div class="flex items-center justify-center gap-1.5 text-xs font-bold">
-                            <span class="bg-slate-700 text-slate-200 px-2.5 py-1 rounded-md shadow-sm">${reg.horaEntrada}</span>
-                            <span class="text-slate-500">-</span>
-                            <span class="bg-slate-800 border border-slate-700 text-slate-400 px-2.5 py-1 rounded-md shadow-sm">${reg.horaSalida}</span>
+                            <span class="bg-slate-700/80 text-slate-200 px-2.5 py-1 rounded-md shadow-sm border border-slate-600/50">${reg.horaEntrada}</span>
+                            <span class="text-slate-400">-</span>
+                            <span class="bg-slate-800/80 border border-slate-700/50 text-slate-300 px-2.5 py-1 rounded-md shadow-sm">${reg.horaSalida}</span>
                         </div>
                     </td>
                     <td class="p-4 font-black text-emerald-400 text-lg">${reg.totalHoras} <span class="text-xs font-medium">h</span></td>
                     <td class="p-4 text-right">
-                        <button onclick="borrarRegistro('${reg.id}')" class="text-slate-500 hover:text-red-400 transition-colors p-2.5 bg-slate-800 shadow-sm border border-slate-700 rounded-xl hover:shadow-md" title="Borrar">
+                        <button onclick="borrarRegistro('${reg.id}')" class="text-slate-400 hover:text-red-400 transition-colors p-2.5 bg-slate-800/80 shadow-sm border border-slate-700/50 rounded-xl hover:shadow-md" title="Borrar">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                     </td>
