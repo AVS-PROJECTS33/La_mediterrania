@@ -293,78 +293,18 @@
 
     <!-- Firebase y Lógica -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "", authDomain: "", projectId: "", storageBucket: "", messagingSenderId: "", appId: "" };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'fichajes-app-operarias';
-
-        let currentUser = null;
-        let registrosGlobales = [];
-        let unsubscribeSnapshot = null;
-
-        const getFichajesRef = () => collection(db, 'artifacts', appId, 'public', 'data', 'fichajes');
-
-        // Configuración de Contraseñas
-        const PIN_OPERARIAS = "1234";
-        const PIN_ADMIN = "admin123";
-
-        // Autenticación Base
-        async function initAuth() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Error de conexión Firebase");
+        // --- NAVEGACIÓN Y UI (Ubicado al principio para que NUNCA falle) ---
+        window.navigateTo = function(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(`view-${viewId}`).classList.add('active');
+            
+            if(viewId === 'home' && window.resetWizard) {
+                window.resetWizard();
+                document.getElementById('adminLoginForm').reset();
+                document.getElementById('errorPinAdmin').classList.add('hidden');
             }
-        }
+        };
 
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            lucide.createIcons();
-        });
-
-        initAuth();
-
-        // Generar horas en selects
-        function generarHoras() {
-            const selects = [document.getElementById('horaEntrada'), document.getElementById('horaSalida')];
-            let opcionesHTML = '';
-            for(let h = 8; h <= 23; h++) {
-                const horaStr = h.toString().padStart(2, '0');
-                opcionesHTML += `<option value="${horaStr}:00">${horaStr}:00</option><option value="${horaStr}:30">${horaStr}:30</option>`;
-            }
-            opcionesHTML += `<option value="00:00">00:00</option>`;
-            selects.forEach(select => select.innerHTML += opcionesHTML);
-        }
-        generarHoras();
-        document.getElementById('fecha').valueAsDate = new Date();
-
-        // Utilidades de tiempo
-        function calcularTotalHoras(inicio, fin) {
-            let [h1, m1] = inicio.split(':').map(Number);
-            let [h2, m2] = fin.split(':').map(Number);
-            if (h2 === 0 && m2 === 0) h2 = 24;
-            let f1 = new Date(2000, 0, 1, h1, m1);
-            let f2 = new Date(2000, 0, 1, h2, m2);
-            if (f2 < f1) f2.setDate(f2.getDate() + 1);
-            return (f2 - f1) / (1000 * 60 * 60);
-        }
-
-        function obtenerDiaSemana(fechaStr) {
-            const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-            const partes = fechaStr.split('-');
-            return dias[new Date(partes[0], partes[1] - 1, partes[2]).getDay()];
-        }
-
-        // --- LÓGICA DEL WIZARD (PASO A PASO ESTRICTO) ---
         const step1 = document.getElementById('step-1-name');
         const step2 = document.getElementById('step-2-pin');
         const step3 = document.getElementById('step-3-details');
@@ -374,8 +314,9 @@
         const userBadge = document.getElementById('user-badge');
         const activeUserName = document.getElementById('active-user-name');
         const msgExito = document.getElementById('msgExito');
+        const PIN_OPERARIAS = "1234";
+        const PIN_ADMIN = "admin123";
 
-        // Función para resetear el formulario a su estado inicial
         window.resetWizard = function() {
             document.getElementById('fichajeForm').reset();
             document.getElementById('fecha').valueAsDate = new Date();
@@ -388,19 +329,6 @@
             userBadge.classList.add('hidden');
         };
 
-        // Navegación entre vistas
-        window.navigateTo = function(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(`view-${viewId}`).classList.add('active');
-            
-            if(viewId === 'home') {
-                resetWizard();
-                document.getElementById('adminLoginForm').reset();
-                document.getElementById('errorPinAdmin').classList.add('hidden');
-            }
-        };
-
-        // PASO 1 -> PASO 2: Oculta nombre, Muestra PIN
         operariaSelect.addEventListener('change', () => {
             if(operariaSelect.value) {
                 step1.classList.add('hidden');
@@ -414,7 +342,6 @@
             }
         });
 
-        // PASO 2 -> PASO 3: Valida PIN automáticamente
         pinInput.addEventListener('input', (e) => {
             const currentPin = e.target.value;
             if (currentPin === PIN_OPERARIAS) {
@@ -431,10 +358,82 @@
             }
         });
 
-        // Guardar Fichaje (Último paso)
+        function generarHoras() {
+            const selects = [document.getElementById('horaEntrada'), document.getElementById('horaSalida')];
+            let opcionesHTML = '';
+            for(let h = 8; h <= 23; h++) {
+                const horaStr = h.toString().padStart(2, '0');
+                opcionesHTML += `<option value="${horaStr}:00">${horaStr}:00</option><option value="${horaStr}:30">${horaStr}:30</option>`;
+            }
+            opcionesHTML += `<option value="00:00">00:00</option>`;
+            selects.forEach(select => select.innerHTML += opcionesHTML);
+        }
+        generarHoras();
+        document.getElementById('fecha').valueAsDate = new Date();
+
+        function calcularTotalHoras(inicio, fin) {
+            let [h1, m1] = inicio.split(':').map(Number);
+            let [h2, m2] = fin.split(':').map(Number);
+            if (h2 === 0 && m2 === 0) h2 = 24;
+            let f1 = new Date(2000, 0, 1, h1, m1);
+            let f2 = new Date(2000, 0, 1, h2, m2);
+            if (f2 < f1) f2.setDate(f2.getDate() + 1);
+            return (f2 - f1) / (1000 * 60 * 60);
+        }
+
+        function obtenerDiaSemana(fechaStr) {
+            const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const partes = fechaStr.split('-');
+            return dias[new Date(partes[0], partes[1] - 1, partes[2]).getDay()];
+        }
+
+        // --- IMPORTACIONES DE FIREBASE ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configuración de tu propio Firebase (La Mediterrania)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD2uji03dHWzBS_VIXD4meknlTvV7zJghs",
+            authDomain: "la-mediterrania.firebaseapp.com",
+            projectId: "la-mediterrania",
+            storageBucket: "la-mediterrania.firebasestorage.app",
+            messagingSenderId: "162840273406",
+            appId: "1:162840273406:web:429efd5324bb0462d560af"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'la-mediterrania-app';
+
+        let currentUser = null;
+        let registrosGlobales = [];
+        let unsubscribeSnapshot = null;
+
+        const getFichajesRef = () => collection(db, 'artifacts', appId, 'public', 'data', 'fichajes');
+
+        async function initAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.warn("Estás ejecutando la app en modo local (sin conexión). Puedes probar la interfaz tranquilamente.");
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            lucide.createIcons();
+        });
+
+        initAuth();
+
+        // Guardar Fichaje
         document.getElementById('fichajeForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!currentUser) return;
             if (pinInput.value !== PIN_OPERARIAS) return;
 
             const btnSubmit = document.getElementById('btnSubmit');
@@ -469,7 +468,7 @@
                     lucide.createIcons();
                 }, 3000);
             } catch (error) {
-                alert("Error al guardar. Verifica la conexión.");
+                alert("Error al intentar guardar. Revisa tu conexión a internet.");
                 btnSubmit.disabled = false;
                 btnSubmit.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6"></i> GUARDAR FICHAJE`;
                 lucide.createIcons();
