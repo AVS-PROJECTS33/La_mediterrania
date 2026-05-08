@@ -122,7 +122,8 @@
         </div>
     </div>
 
-    <div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+    <!-- Modificado: Ampliado a max-w-[1400px] para usar más pantalla en PC -->
+    <div class="w-full max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8">
         
         <!-- Cabecera Global -->
         <header class="flex items-center justify-between mb-8 bg-slate-900/60 backdrop-blur-md p-4 md:p-5 rounded-2xl shadow-lg border border-slate-700/40">
@@ -329,13 +330,14 @@
             <!-- Navegación interna del Panel Admin y Fecha Actual -->
             <div class="flex flex-col md:flex-row justify-between items-end border-b border-slate-700/50 mb-6 pb-2 gap-4">
                 <div class="flex overflow-x-auto gap-2 scrollbar-hide w-full md:w-auto">
-                    <button onclick="switchAdminTab('tab-cuadrante')" id="btn-tab-cuadrante" class="admin-tab-btn active px-4 py-2.5 rounded-t-xl font-bold text-sm transition-all whitespace-nowrap bg-emerald-600/90 text-white border-b-2 border-emerald-400">
+                    <!-- Modificado: Añadido fondo semitransparente oscuro (bg-slate-900/80) a las pestañas inactivas para que se lean bien -->
+                    <button onclick="switchAdminTab('tab-cuadrante')" id="btn-tab-cuadrante" class="admin-tab-btn active px-4 py-2.5 rounded-t-xl font-bold text-sm transition-all whitespace-nowrap bg-emerald-600/90 text-white border-b-2 border-emerald-400 backdrop-blur-md">
                         <i data-lucide="calendar-days" class="inline w-4 h-4 mr-2 relative -top-0.5"></i> Control Horario
                     </button>
-                    <button onclick="switchAdminTab('tab-seguridad')" id="btn-tab-seguridad" class="admin-tab-btn px-4 py-2.5 rounded-t-xl font-bold text-sm transition-all whitespace-nowrap text-slate-400 hover:text-slate-200 border-b-2 border-transparent">
+                    <button onclick="switchAdminTab('tab-seguridad')" id="btn-tab-seguridad" class="admin-tab-btn px-4 py-2.5 rounded-t-xl font-bold text-sm transition-all whitespace-nowrap bg-slate-900/80 text-slate-300 hover:text-white border-b-2 border-transparent backdrop-blur-md hover:bg-slate-800/90">
                         <i data-lucide="lock-keyhole" class="inline w-4 h-4 mr-2 relative -top-0.5"></i> Seguridad (PIN)
                     </button>
-                    <button onclick="switchAdminTab('tab-descargas')" id="btn-tab-descargas" class="admin-tab-btn px-4 py-2.5 rounded-t-xl font-bold text-sm transition-all whitespace-nowrap text-slate-400 hover:text-slate-200 border-b-2 border-transparent">
+                    <button onclick="switchAdminTab('tab-descargas')" id="btn-tab-descargas" class="admin-tab-btn px-4 py-2.5 rounded-t-xl font-bold text-sm transition-all whitespace-nowrap bg-slate-900/80 text-slate-300 hover:text-white border-b-2 border-transparent backdrop-blur-md hover:bg-slate-800/90">
                         <i data-lucide="download" class="inline w-4 h-4 mr-2 relative -top-0.5"></i> Exportar e Informes
                     </button>
                 </div>
@@ -347,8 +349,8 @@
                 </div>
             </div>
 
-            <!-- Contenedor PRINCIPAL del Panel Admin (Menos transparente bg-slate-900/95) -->
-            <div class="bg-slate-900/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-slate-700/60 p-5 sm:p-6 transition-colors">
+            <!-- Modificado: Vuelto a la transparencia original (bg-slate-900/60) -->
+            <div class="bg-slate-900/60 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-700/40 p-5 sm:p-6 transition-colors">
                 
                 <!-- SECCIÓN 1: CUADRANTE SEMANAL -->
                 <div id="tab-cuadrante" class="admin-tab-content block animate-fade-in">
@@ -886,10 +888,10 @@
             
             document.querySelectorAll('.admin-tab-btn').forEach(btn => {
                 btn.classList.remove('text-white', 'border-emerald-400', 'bg-emerald-600/90');
-                btn.classList.add('text-slate-400', 'border-transparent');
+                btn.classList.add('bg-slate-900/80', 'text-slate-300', 'border-transparent');
             });
             const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.remove('text-slate-400', 'border-transparent');
+            activeBtn.classList.remove('bg-slate-900/80', 'text-slate-300', 'border-transparent');
             activeBtn.classList.add('text-white', 'border-emerald-400', 'bg-emerald-600/90');
             
             if(tabId === 'tab-cuadrante') generarCuadranteHTML();
