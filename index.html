@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Mediterrania - Fichajes</title>
+
+    <!-- Meta tags para PWA (Añadir a Pantalla de Inicio) y App Móvil -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fichajes">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Iconos de la Aplicación -->
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/AVS-PROJECTS33/La_mediterrania/main/Gemini_Generated_Image_m2vh8km2vh8km2vh.png">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/AVS-PROJECTS33/La_mediterrania/main/Gemini_Generated_Image_m2vh8km2vh8km2vh.png">
     
     <!-- Fuentes Elegantes para el Logo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,6 +62,21 @@
     </style>
 </head>
 <body class="min-h-screen selection:bg-emerald-900">
+
+    <!-- Mensaje Flotante de Instalación iOS (El "Truco") -->
+    <div id="ios-prompt" class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] w-11/12 max-w-sm bg-stone-800/95 backdrop-blur-xl border border-stone-600/50 p-4 rounded-3xl shadow-2xl text-white animate-fade-in">
+        <div class="flex items-start gap-4">
+            <!-- Previsualización del Logo recortado en redondo -->
+            <img src="https://raw.githubusercontent.com/AVS-PROJECTS33/La_mediterrania/main/Gemini_Generated_Image_m2vh8km2vh8km2vh.png" alt="Logo App" class="w-14 h-14 rounded-full object-cover border-2 border-stone-600 shadow-md shrink-0">
+            <div class="flex-1 mt-0.5">
+                <h4 class="font-black text-[15px] mb-1 leading-tight">Instalar App</h4>
+                <p class="text-xs text-stone-300 leading-snug">Pulsa Compartir <i data-lucide="share" class="inline w-3.5 h-3.5 mx-0.5 mb-0.5 text-blue-400"></i> en el menú de Safari y luego selecciona <strong>"Añadir a la pantalla de inicio"</strong>.</p>
+            </div>
+            <button onclick="document.getElementById('ios-prompt').style.display='none'" class="text-stone-400 hover:text-white transition-colors bg-stone-700/50 rounded-full p-1.5 shrink-0 mt-1">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </div>
 
     <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
         
@@ -125,8 +150,8 @@
                         </div>
                         
                         <div class="relative">
-                            <i data-lucide="user-check" class="absolute left-4 top-4 w-6 h-6 text-stone-500"></i>
-                            <select id="operaria" required class="w-full pl-12 pr-4 py-4 bg-stone-900 border-2 border-stone-700 rounded-2xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none font-bold text-xl cursor-pointer">
+                            <i data-lucide="user-check" class="absolute left-3 sm:left-4 top-4 w-6 h-6 text-stone-500"></i>
+                            <select id="operaria" required class="w-full pl-10 sm:pl-12 pr-4 py-4 bg-stone-900 border-2 border-stone-700 rounded-2xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none font-bold text-lg sm:text-xl cursor-pointer">
                                 <option value="" disabled selected>Toca para elegir...</option>
                                 <option value="Sol">Sol</option>
                                 <option value="Denise">Denise</option>
@@ -149,8 +174,8 @@
                         </div>
 
                         <div class="relative">
-                            <i data-lucide="key" class="absolute left-4 top-4 w-6 h-6 text-stone-500"></i>
-                            <input type="number" inputmode="numeric" id="pinOperaria" required placeholder="****" class="w-full pl-12 pr-4 py-4 bg-stone-900 border-2 border-stone-700 rounded-2xl focus:ring-0 focus:border-emerald-500 text-white transition-colors font-black text-2xl tracking-[0.5em] text-center shadow-inner">
+                            <i data-lucide="key" class="absolute left-3 sm:left-4 top-4 w-6 h-6 text-stone-500"></i>
+                            <input type="number" inputmode="numeric" id="pinOperaria" required placeholder="****" class="w-full pl-10 sm:pl-12 pr-4 py-4 bg-stone-900 border-2 border-stone-700 rounded-2xl focus:ring-0 focus:border-emerald-500 text-white transition-colors font-black text-xl sm:text-2xl tracking-widest sm:tracking-[0.5em] text-center shadow-inner">
                         </div>
                         
                         <div id="errorPinOperaria" class="hidden text-center mt-3 p-3 bg-red-900/40 text-red-400 rounded-xl border border-red-800/50 text-sm font-bold">
@@ -171,8 +196,9 @@
                         <div class="space-y-2">
                             <label class="block text-sm font-bold text-stone-300">Día trabajado</label>
                             <div class="relative">
-                                <i data-lucide="calendar" class="absolute left-4 top-4 w-5 h-5 text-stone-500"></i>
-                                <input type="date" id="fecha" required class="w-full pl-12 pr-4 py-3.5 bg-stone-900 border-2 border-stone-700 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors font-bold text-lg" style="color-scheme: dark;">
+                                <i data-lucide="calendar" class="absolute left-3 sm:left-4 top-4 w-5 h-5 text-stone-500"></i>
+                                <!-- Ajustado el padding (pl-9, pr-2) y el tamaño de texto en móviles (text-base) para que no se salga -->
+                                <input type="date" id="fecha" required class="w-full pl-9 sm:pl-12 pr-2 sm:pr-4 py-3.5 bg-stone-900 border-2 border-stone-700 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors font-bold text-base sm:text-lg max-w-full box-border" style="color-scheme: dark;">
                             </div>
                         </div>
 
@@ -180,13 +206,13 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="space-y-2">
                                 <label class="block text-sm font-bold text-stone-300 text-center">Entrada</label>
-                                <select id="horaEntrada" required class="w-full px-2 py-3.5 bg-stone-900 border-2 border-stone-700 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none text-center font-black text-xl">
+                                <select id="horaEntrada" required class="w-full px-1 sm:px-2 py-3.5 bg-stone-900 border-2 border-stone-700 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none text-center font-black text-lg sm:text-xl">
                                     <option value="" disabled selected>--:--</option>
                                 </select>
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-bold text-stone-300 text-center">Salida</label>
-                                <select id="horaSalida" required class="w-full px-2 py-3.5 bg-stone-900 border-2 border-stone-700 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none text-center font-black text-xl">
+                                <select id="horaSalida" required class="w-full px-1 sm:px-2 py-3.5 bg-stone-900 border-2 border-stone-700 rounded-xl focus:ring-0 focus:border-emerald-500 text-white transition-colors appearance-none text-center font-black text-lg sm:text-xl">
                                     <option value="" disabled selected>--:--</option>
                                 </select>
                             </div>
@@ -657,6 +683,24 @@
             link.click();
             document.body.removeChild(link);
         };
+
+        // --- LÓGICA DEL POPUP DE INSTALACIÓN PARA iOS ---
+        function checkIOSPrompt() {
+            const isIos = () => {
+                const userAgent = window.navigator.userAgent.toLowerCase();
+                return /iphone|ipad|ipod/.test(userAgent);
+            };
+            // En iOS, standalone es true si se abre desde la Pantalla de Inicio
+            const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+            // Si es un iPhone y está en Safari (no instalado), muestra el cartel
+            if (isIos() && !isInStandaloneMode()) {
+                document.getElementById('ios-prompt').classList.remove('hidden');
+            }
+        }
+        
+        // Esperamos 1 segundo para mostrarlo de forma suave tras cargar la app
+        setTimeout(checkIOSPrompt, 1000);
 
         lucide.createIcons();
     </script>
